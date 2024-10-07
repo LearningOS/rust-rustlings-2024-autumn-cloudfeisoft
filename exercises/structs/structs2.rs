@@ -5,8 +5,6 @@
 // Execute `rustlings hint structs2` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
-
 #[derive(Debug)]
 struct Order {
     name: String,
@@ -47,9 +45,6 @@ mod tests {
             item_number:order_template.item_number,
             count:1
         };
-        //your_order.name="Hacker in Rust";
-        //your_order.count=1;
-
 
         assert_eq!(your_order.name, "Hacker in Rust");
         assert_eq!(your_order.year, order_template.year);
