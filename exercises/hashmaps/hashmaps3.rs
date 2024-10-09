@@ -52,9 +52,9 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
 
         //scores.insert(team_2_name,t2);
 
-        let count1=scores.entry(team_1_name).or_insert(t1);
-        (*count1).goals_scored+=team_1_score;
-        (*count1).goals_conceded+=team_2_score;
+        let team_val1=scores.entry(team_1_name).or_insert(t1);
+        (*team_val1).goals_scored+=team_1_score;
+        (*team_val1).goals_conceded+=team_2_score;
 
         let count2=scores.entry(team_2_name).or_insert(t2);
         (*count2).goals_scored+=team_2_score;
