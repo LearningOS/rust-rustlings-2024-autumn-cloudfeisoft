@@ -1,32 +1,33 @@
-// errors4.rs
-//
-// Execute `rustlings hint errors4` or use the `hint` watch subcommand for a
-// hint.
+fn main() {
+    use std::thread;
+    use std::time::Duration;
 
-// I AM NOT DONE
+    fn generate_workout(intensity: u32, random_number: u32) {
+        let mut i = 0; // 初始化 i
+        let expensive_closure = |num: u32| {
+            println!("calculating slowly...");
+            thread::sleep(Duration::from_secs(2));
+            num + i
+        };
 
-#[derive(PartialEq, Debug)]
-struct PositiveNonzeroInteger(u64);
-
-#[derive(PartialEq, Debug)]
-enum CreationError {
-    Negative,
-    Zero,
-}
-
-impl PositiveNonzeroInteger {
-    fn new(value: i64) -> Result<PositiveNonzeroInteger, CreationError> {
-        // Hmm...? Why is this only returning an Ok value?
-        Ok(PositiveNonzeroInteger(value as u64))
+        if intensity < 25 {
+            println!(
+                "Today, do {} pushups!",
+                expensive_closure(intensity)
+            );
+            println!(
+                "Next, do {} situps!",
+                expensive_closure(intensity)
+            );
+        } else {
+            if random_number == 3 {
+                println!("Take a break today! Remember to stay hydrated!");
+            } else {
+                println!(
+                    "Today, run for {} minutes!",
+                    expensive_closure(intensity)
+                );
+            }
+        }
     }
-}
-
-#[test]
-fn test_creation() {
-    assert!(PositiveNonzeroInteger::new(10).is_ok());
-    assert_eq!(
-        Err(CreationError::Negative),
-        PositiveNonzeroInteger::new(-10)
-    );
-    assert_eq!(Err(CreationError::Zero), PositiveNonzeroInteger::new(0));
 }
