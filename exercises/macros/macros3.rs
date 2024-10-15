@@ -1,20 +1,18 @@
-// macros3.rs
-//
-// Make me compile, without taking the macro out of the module!
-//
-// Execute `rustlings hint macros3` or use the `hint` watch subcommand for a
-// hint.
-
-// I AM NOT DONE
-
 mod macros {
+    // Define the macro within the module.
     macro_rules! my_macro {
         () => {
             println!("Check out my macro!");
         };
     }
+
+    // Create a public function that invokes the macro.
+    pub fn invoke_macro() {
+        my_macro!();
+    }
 }
 
 fn main() {
-    my_macro!();
+    // Call the public function from the main module to invoke the macro.
+    macros::invoke_macro();
 }
