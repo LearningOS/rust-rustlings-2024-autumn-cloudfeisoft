@@ -1,39 +1,60 @@
-impl<T: Ord> LinkedList<T> {
-    pub fn merge(mut list_a: Self, mut list_b: Self) -> Self {
-        let mut result = Self::new();
+use std::collections::LinkedList;
 
-        // Use raw pointers to avoid repeated unsafe blocks
-        let (mut ptr_a, mut ptr_b) = (list_a.start, list_b.start);
+pub struct MergeableLinkedList<T> {
+    list: LinkedList<T>,
+}
 
-        // While both lists have elements
-        while let (Some(node_a), Some(node_b)) = (ptr_a.map(|n| unsafe { &*n.as_ptr() }), ptr_b.map(|n| unsafe { &*n.as_ptr() })) {
-            if node_a.val < node_b.val {
-                // Append node from list_a to the result
-                result.add(node_a.val);
-                ptr_a = node_a.next;
+impl<T: Ord + Clone> MergeableLinkedList<T> {
+    // 创建一个新的 MergeableLinkedList
+    pub fn new(list: LinkedList<T>) -> Self {
+        MergeableLinkedList { list }
+    }
+
+    // 合并两个有序的 MergeableLinkedList
+    pub fn merge(mut self, other: MergeableLinkedList<T>) -> Self {
+        let mut result = LinkedList::new();
+
+        // 使用两个迭代器来遍历两个链表
+        let mut iter_a = self.list.iter();
+        let mut iter_b = other.list.iter();
+
+        // 使用 `match` 语句来比较两个链表的当前元素
+        while let (Some(val_a), Some(val_b)) = (iter_a.next(), iter_b.next()) {
+            if val_a < val_b {
+                // 如果 val_a 的值小于 val_b 的值，将 val_a 添加到结果链表
+                result.push_back(val_a.clone());
             } else {
-                // Append node from list_b to the result
-                result.add(node_b.val);
-                ptr_b = node_b.next;
+                // 否则，将 val_b 添加到结果链表
+                result.push_back(val_b.clone());
             }
         }
 
-        // Append remaining elements from list_a
-        if let Some(mut remaining_a) = ptr_a {
-            while let Some(node) = remaining_a {
-                result.add(unsafe { (*node.as_ptr()).val });
-                remaining_a = unsafe { (*node.as_ptr()).next };
-            }
-        }
+        // 将剩余的元素添加到结果链表
+        result.append(&mut self.list);
+        result.extend(other.list);
 
-        // Append remaining elements from list_b
-        if let Some(mut remaining_b) = ptr_b {
-            while let Some(node) = remaining_b {
-                result.add(unsafe { (*node.as_ptr()).val });
-                remaining_b = unsafe { (*node.as_ptr()).next };
-            }
-        }
+        // 返回包装了合并后链表的新实例
+        MergeableLinkedList { list: result }
+    }
+}
 
-        result
+fn main() {
+    let mut list_a: LinkedList<i32> = LinkedList::new();
+    let mut list_b: LinkedList<i32> = LinkedList::new();
+
+    // 假设 list_a 和 list_b 已经被正确填充了有序元素
+    list_a.push_back(1);
+    list_a.push_back(3);
+    list_a.push_back(5);
+
+    list_b.push_back(2);
+    list_b.push_back(4);
+    list_b.push_back(6);
+
+    let merged_list = MergeableLinkedList::new(list_a).merge(MergeableLinkedList::new(list_b));
+
+    // 打印合并后的链表
+    for elem in merged_list.list.iter() {
+        println!("{}", elem);
     }
 }
